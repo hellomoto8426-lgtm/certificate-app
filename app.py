@@ -5,6 +5,7 @@ from datetime import datetime
 import smtplib
 from email.message import EmailMessage
 import os
+from pathlib import Path
 
 #make dashboard
 os.makedirs("generated_certificates", exist_ok=True)
@@ -14,8 +15,9 @@ white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Fonts
-TITLE_FONT = "arialbd.ttf"
-BODY_FONT = "arial.ttf"
+FONT_DIR = Path("fonts")
+TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
+BODY_FONT = str(FONT_DIR / "arial.ttf")
 
 # Styles
 STYLES = [
