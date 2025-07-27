@@ -7,17 +7,30 @@ from email.message import EmailMessage
 import os
 from pathlib import Path
 
-#make dashboard
+# Create directory for dashboard
 os.makedirs("generated_certificates", exist_ok=True)
 
 # Load logos
 white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
-# Fonts
-FONT_DIR = Path("fonts")
+# Set absolute font paths
+BASE_DIR = Path(__file__).resolve().parent
+FONT_DIR = BASE_DIR / "fonts"
 TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
 BODY_FONT = str(FONT_DIR / "arial.ttf")
+
+# Font sizes (bigger for deployment)
+if os.getenv("STREAMLIT_SERVER") or os.getenv("HOME") == "/home/appuser":
+    HEADING_FONT_SIZE = 70
+    NAME_FONT_SIZE = 65
+    BODY_FONT_SIZE = 45
+    FOOTER_FONT_SIZE = 30
+else:
+    HEADING_FONT_SIZE = 60
+    NAME_FONT_SIZE = 55
+    BODY_FONT_SIZE = 40
+    FOOTER_FONT_SIZE = 24
 
 # Styles
 STYLES = [
@@ -48,11 +61,11 @@ def draw_certificate(style, prefix, name, event, role, level):
     draw = ImageDraw.Draw(cert)
 
     try:
-        header_font = ImageFont.truetype(TITLE_FONT, 38)
-        title_font = ImageFont.truetype(TITLE_FONT, 58)
-        sub_font = ImageFont.truetype(BODY_FONT, 30)
-        name_font = ImageFont.truetype(TITLE_FONT, 55)
-        footer_font = ImageFont.truetype(BODY_FONT, 24)
+        header_font = ImageFont.truetype(TITLE_FONT, HEADING_FONT_SIZE - 20)
+        title_font = ImageFont.truetype(TITLE_FONT, HEADING_FONT_SIZE)
+        sub_font = ImageFont.truetype(BODY_FONT, BODY_FONT_SIZE)
+        name_font = ImageFont.truetype(TITLE_FONT, NAME_FONT_SIZE)
+        footer_font = ImageFont.truetype(BODY_FONT, FOOTER_FONT_SIZE)
     except:
         header_font = title_font = sub_font = name_font = footer_font = ImageFont.load_default()
 
@@ -61,25 +74,25 @@ def draw_certificate(style, prefix, name, event, role, level):
     cert.paste(yellow_logo, (840, 30), yellow_logo)
 
     draw.text((500, 50), "JSPM GROUP OF INSTITUTES", fill=config["font"], anchor="mm", font=header_font)
-    draw.text((500, 120), "Certificate of Completion", fill=config["font"], anchor="mm", font=title_font)
-    draw.text((500, 200), "This certificate is proudly presented to", fill=config["font"], anchor="mm", font=sub_font)
+    draw.text((500, 130), "Certificate of Completion", fill=config["font"], anchor="mm", font=title_font)
+    draw.text((500, 210), "This certificate is proudly presented to", fill=config["font"], anchor="mm", font=sub_font)
 
     full_name = f"{prefix} {name}"
-    draw.text((500, 260), full_name, fill=config["font"], anchor="mm", font=name_font)
+    draw.text((500, 280), full_name, fill=config["font"], anchor="mm", font=name_font)
 
-    draw.text((500, 330), f"For being a {role}", fill=config["font"], anchor="mm", font=sub_font)
-    draw.text((500, 370), f"in the event: '{event}'", fill=config["font"], anchor="mm", font=sub_font)
-    draw.text((500, 410), f"Level: {level}", fill=config["font"], anchor="mm", font=sub_font)
+    draw.text((500, 350), f"For being a {role}", fill=config["font"], anchor="mm", font=sub_font)
+    draw.text((500, 390), f"in the event: '{event}'", fill=config["font"], anchor="mm", font=sub_font)
+    draw.text((500, 430), f"Level: {level}", fill=config["font"], anchor="mm", font=sub_font)
 
     today = datetime.today().strftime("%d %B %Y")
     draw.text((100, 650), f"Date: {today}", fill=config["font"], font=footer_font)
-    draw.text((850, 650), f"Signature", fill=config["font"], anchor="mm", font=footer_font)
+    draw.text((850, 650), "Signature", fill=config["font"], anchor="mm", font=footer_font)
 
     return cert
 
 def send_email_with_attachment(receiver_email, subject, body, attachment_bytes, filename):
-    sender_email = "timepass614315@gmail.com"         # ✅ Replace
-    sender_password = "dwev roqc bvpn nsls"                # ✅ Replace
+    sender_email = "timepass614315@gmail.com"
+    sender_password = "dwev roqc bvpn nsls"
 
     msg = EmailMessage()
     msg['Subject'] = subject
@@ -96,15 +109,12 @@ def send_email_with_attachment(receiver_email, subject, body, attachment_bytes, 
     except Exception as e:
         st.error(f"Failed to send email: {e}")
         return False
-    
-#dashboard
 
+# Streamlit UI
 st.set_page_config("Certificate Generator", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to", ["🏆 Certificate Generator", "📊 Dashboard"])
 
-# ───── Streamlit UI ─────
-st.set_page_config("JSPM Certificate Generator", layout="wide")
 st.title("🎓 AI-Powered Certificate Generator - JSPM Group")
 
 with st.form("input_form"):
@@ -121,10 +131,9 @@ if "submitted" not in st.session_state:
 if "selected_style" not in st.session_state:
     st.session_state["selected_style"] = None
 
-# When the form is submitted
 if submitted:
     st.session_state["submitted"] = True
-    st.session_state["selected_style"] = None  # Reset selected style on new submit
+    st.session_state["selected_style"] = None
 
 if st.session_state["submitted"]:
     st.subheader("🎨 Select from 12 AI-Designed Certificates")
@@ -159,18 +168,18 @@ if st.session_state["submitted"]:
         st.info("👆 Please select a certificate design to download.")
 
 if st.button("📧 Send Certificate to Email"):
-        if email:
-            sent = send_email_with_attachment(
-                receiver_email=email,
-                subject="Your Certificate from JSPM Group",
-                body=f"Dear {prefix} {name},\n\nPlease find your attached certificate for '{event}'.\n\nRegards,\nJSPM Team",
-                attachment_bytes=pdf_bytes,
-                filename=f"{name}_{selected_style}.pdf"
-            )
-            if sent:
-                st.success("✅ Email sent successfully!")
-        else:
-            st.warning("⚠️ Please enter a valid email address.")
+    if email:
+        sent = send_email_with_attachment(
+            receiver_email=email,
+            subject="Your Certificate from JSPM Group",
+            body=f"Dear {prefix} {name},\n\nPlease find your attached certificate for '{event}'.\n\nRegards,\nJSPM Team",
+            attachment_bytes=pdf_bytes,
+            filename=f"{name}_{selected_style}.pdf"
+        )
+        if sent:
+            st.success("✅ Email sent successfully!")
+    else:
+        st.warning("⚠️ Please enter a valid email address.")
 
 elif page == "📊 Dashboard":
     st.title("📊 Certificate Dashboard")
