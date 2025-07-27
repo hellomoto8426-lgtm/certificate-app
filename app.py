@@ -15,7 +15,7 @@ white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Fonts
-FONT_DIR = Path("fonts")
+FONT_DIR = Path("C:\CertificateApp\fonts")
 TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
 BODY_FONT = str(FONT_DIR / "arial.ttf")
 
@@ -51,7 +51,7 @@ def draw_certificate(style, prefix, name, event, role, level):
         header_font = ImageFont.truetype(TITLE_FONT, 60)
         title_font = ImageFont.truetype(TITLE_FONT, 80)
         sub_font = ImageFont.truetype(BODY_FONT, 50)
-        name_font = ImageFont.truetype(TITLE_FONT, 80)
+        name_font = ImageFont.truetype(TITLE_FONT, 40)
         footer_font = ImageFont.truetype(BODY_FONT, 30)
     except:
         header_font = title_font = sub_font = name_font = footer_font = ImageFont.load_default()
