@@ -1,0 +1,5 @@
+smtplib
+email-validator
+streamlit
+Pillow
+reportlab

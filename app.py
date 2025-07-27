@@ -15,7 +15,7 @@ white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Set absolute font paths
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).parent    
 FONT_DIR = BASE_DIR / "fonts"
 TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
 BODY_FONT = str(FONT_DIR / "arial.ttf")
@@ -60,14 +60,18 @@ def draw_certificate(style, prefix, name, event, role, level):
     cert = Image.new("RGB", (1000, 700), config["bg"])
     draw = ImageDraw.Draw(cert)
 
-    try:
-        header_font = ImageFont.truetype(TITLE_FONT, HEADING_FONT_SIZE - 20)
-        title_font = ImageFont.truetype(TITLE_FONT, HEADING_FONT_SIZE)
-        sub_font = ImageFont.truetype(BODY_FONT, BODY_FONT_SIZE)
-        name_font = ImageFont.truetype(TITLE_FONT, NAME_FONT_SIZE)
-        footer_font = ImageFont.truetype(BODY_FONT, FOOTER_FONT_SIZE)
-    except:
-        header_font = title_font = sub_font = name_font = footer_font = ImageFont.load_default()
+    def load_font(font_path, size):
+        try:
+            return ImageFont.truetype(str(font_path), size)
+        except Exception:
+            return ImageFont.load_default()
+
+    header_font = load_font(TITLE_FONT, 50)
+    title_font = load_font(TITLE_FONT, 70)
+    sub_font = load_font(BODY_FONT, 40)
+    name_font = load_font(TITLE_FONT, 65)
+    footer_font = load_font(BODY_FONT, 28)
+
 
     draw.rectangle([(0, 0), (999, 699)], outline=config["border"], width=15)
     cert.paste(white_logo, (80, 30), white_logo)
