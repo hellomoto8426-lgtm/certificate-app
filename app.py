@@ -15,7 +15,7 @@ white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Fonts
-FONT_DIR = Path("C:\CertificateApp\fonts")
+FONT_DIR = Path("fonts")
 TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
 BODY_FONT = str(FONT_DIR / "arial.ttf")
 
