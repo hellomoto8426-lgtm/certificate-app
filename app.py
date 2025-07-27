@@ -7,6 +7,10 @@ from email.message import EmailMessage
 import os
 from pathlib import Path
 
+st.write("Current working directory:", os.getcwd())
+st.write("Files in project:", os.listdir())
+
+
 # Create directory for dashboard
 os.makedirs("generated_certificates", exist_ok=True)
 
@@ -62,7 +66,7 @@ def draw_certificate(style, prefix, name, event, role, level):
 
     def load_font(font_path, size):
         try:
-            return ImageFont.truetype(str(font_path), size)
+            return ImageFont.truetype(TITLE_FONT), 38
         except Exception:
             return ImageFont.load_default()
 
