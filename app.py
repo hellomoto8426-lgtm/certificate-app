@@ -5,6 +5,7 @@ from datetime import datetime
 import smtplib
 from email.message import EmailMessage
 import os
+from pathlib import Path
 
 #make dashboard
 os.makedirs("generated_certificates", exist_ok=True)
@@ -14,8 +15,9 @@ white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Fonts
-TITLE_FONT = "arialbd.ttf"
-BODY_FONT = "arial.ttf"
+FONT_DIR = Path("fonts")
+TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
+BODY_FONT = str(FONT_DIR / "arial.ttf")
 
 # Styles
 STYLES = [
@@ -46,11 +48,11 @@ def draw_certificate(style, prefix, name, event, role, level):
     draw = ImageDraw.Draw(cert)
 
     try:
-        header_font = ImageFont.truetype(TITLE_FONT, 38)
-        title_font = ImageFont.truetype(TITLE_FONT, 58)
-        sub_font = ImageFont.truetype(BODY_FONT, 30)
-        name_font = ImageFont.truetype(TITLE_FONT, 55)
-        footer_font = ImageFont.truetype(BODY_FONT, 24)
+        header_font = ImageFont.truetype(TITLE_FONT, 60)
+        title_font = ImageFont.truetype(TITLE_FONT, 80)
+        sub_font = ImageFont.truetype(BODY_FONT, 50)
+        name_font = ImageFont.truetype(TITLE_FONT, 80)
+        footer_font = ImageFont.truetype(BODY_FONT, 30)
     except:
         header_font = title_font = sub_font = name_font = footer_font = ImageFont.load_default()
 
