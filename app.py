@@ -184,8 +184,5 @@ elif page == "📊 Dashboard":
             with open(cert_path, "rb") as f:
                 st.download_button("Download Again", f, file_name=cert, key=cert)
     else:
-<<<<<<< HEAD
+
         st.info("No certificates generated yet.")   
-=======
-        st.info("No certificates generated yet.")   
->>>>>>> 5667999d886b676d054c21f40a5bdc1291b4188d
