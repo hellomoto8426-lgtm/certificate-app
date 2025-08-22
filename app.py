@@ -10,14 +10,14 @@ from pathlib import Path
 #make dashboard
 os.makedirs("generated_certificates", exist_ok=True)
 
+
 # Load logos
 white_logo = Image.open("jspmlogo.png").convert("RGBA").resize((80, 80))
 yellow_logo = Image.open("hadapsarjspmlogo.jpeg").convert("RGBA").resize((80, 80))
 
 # Fonts
-FONT_DIR = Path("fonts")
-TITLE_FONT = str(FONT_DIR / "arialbd.ttf")
-BODY_FONT = str(FONT_DIR / "arial.ttf")
+TITLE_FONT = "arialbd.ttf"
+BODY_FONT = "arial.ttf"
 
 # Styles
 STYLES = [
@@ -48,11 +48,11 @@ def draw_certificate(style, prefix, name, event, role, level):
     draw = ImageDraw.Draw(cert)
 
     try:
-        header_font = ImageFont.truetype(TITLE_FONT, 60)
-        title_font = ImageFont.truetype(TITLE_FONT, 80)
-        sub_font = ImageFont.truetype(BODY_FONT, 50)
-        name_font = ImageFont.truetype(TITLE_FONT, 40)
-        footer_font = ImageFont.truetype(BODY_FONT, 30)
+        header_font = ImageFont.truetype(TITLE_FONT, 38)
+        title_font = ImageFont.truetype(TITLE_FONT, 58)
+        sub_font = ImageFont.truetype(BODY_FONT, 30)
+        name_font = ImageFont.truetype(TITLE_FONT, 55)
+        footer_font = ImageFont.truetype(BODY_FONT, 24)
     except:
         header_font = title_font = sub_font = name_font = footer_font = ImageFont.load_default()
 
@@ -102,6 +102,7 @@ def send_email_with_attachment(receiver_email, subject, body, attachment_bytes, 
 st.set_page_config("Certificate Generator", layout="wide")
 st.sidebar.title("📁 Navigation")
 page = st.sidebar.radio("Go to", ["🏆 Certificate Generator", "📊 Dashboard"])
+
 
 # ───── Streamlit UI ─────
 st.set_page_config("JSPM Certificate Generator", layout="wide")
@@ -183,4 +184,4 @@ elif page == "📊 Dashboard":
             with open(cert_path, "rb") as f:
                 st.download_button("Download Again", f, file_name=cert, key=cert)
     else:
-        st.info("No certificates generated yet.")
+        st.info("No certificates generated yet.")   
